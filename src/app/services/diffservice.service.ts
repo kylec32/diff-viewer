@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { DiffFile } from './file.interface';
+import { FileOperation } from './fileoperation.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +14,35 @@ export class DiffserviceService {
     var fileMatch = /^diff --git a\/(.*) b\/(.*)/;
     var files:String[] = [];
     for(let line in diffLines){
-      debugger;
       if(fileMatch.test(diffLines[line])) {
         var match = fileMatch.exec(diffLines[line])
         files.push(match[1]);
       }
     }
     return files;
+  }
+
+  public getFilesInfo(diff: string): DiffFile[] {
+    var addFileMatch = /^--- (a\/(.*)|\/dev\/null)/;
+    var removeFileMatch = /^\+\+\+ (b\/(.*)|\/dev\/null)/;
+    var fileInfo: DiffFile[] = [];
+    var diffLines = diff.split('\n');
+    for(let i = 0; i < diffLines.length; i++){
+      if(addFileMatch.test(diffLines[i])) {
+        if(removeFileMatch.test(diffLines[i+1])) {
+          var addMatch = addFileMatch.exec(diffLines[i]);
+          var removeMatch = removeFileMatch.exec(diffLines[i+1])
+          var fileData = <DiffFile>{};
+          fileData.type = addMatch[1] == '/dev/null' ? FileOperation.ADD : removeMatch[1] == '/dev/null' ? FileOperation.REMOVE : FileOperation.MODIFY;
+          fileData.name = fileData.type == FileOperation.ADD ? removeMatch[2] : addMatch[2]
+          
+          fileInfo.push(fileData);
+
+        }
+      }
+    }
+
+    return fileInfo;
   }
 
   public getFileDiffDetails(diff: String):any {

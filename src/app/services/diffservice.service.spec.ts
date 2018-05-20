@@ -1,6 +1,8 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { DiffserviceService } from './diffservice.service';
+import { FileOperation } from './fileoperation.enum';
+import { DiffFile } from './file.interface';
 var mockData = require('./mockdata.json');
 
 describe('DiffserviceService', () => {
@@ -15,32 +17,33 @@ describe('DiffserviceService', () => {
   }));
 
   it('should get correct files: main example', inject([DiffserviceService], (service: DiffserviceService) => {
-    var files = service.getFiles(mockData.main);
+    var files = service.getFilesInfo(mockData.main);
 
     expect(files.length).toBe(12);
-    expect(files).toContain('test/line-by-line-tests.js');
-    expect(files).toContain('README.md');
-    expect(files).toContain('scripts/hulk.js');
-    expect(files).toContain('src/diff2html.js');
-    expect(files).toContain('src/file-list-printer.js');
-    expect(files).toContain('src/hoganjs-utils.js');
-    expect(files).toContain('src/html-printer.js');
-    expect(files).toContain('src/line-by-line-printer.js');
-    expect(files).toContain('src/side-by-side-printer.js');
-    expect(files).toContain('test/file-list-printer-tests.js');
-    expect(files).toContain('test/hogan-cache-tests.js');
-    expect(files).toContain('test/line-by-line-tests.js');
+    let fileNames = files.map((file) => file.name);
+    expect(fileNames).toContain('test/line-by-line-tests.js');
+    expect(fileNames).toContain('README.md');
+    expect(fileNames).toContain('scripts/hulk.js');
+    expect(fileNames).toContain('src/diff2html.js');
+    expect(fileNames).toContain('src/file-list-printer.js');
+    expect(fileNames).toContain('src/hoganjs-utils.js');
+    expect(fileNames).toContain('src/html-printer.js');
+    expect(fileNames).toContain('src/line-by-line-printer.js');
+    expect(fileNames).toContain('src/side-by-side-printer.js');
+    expect(fileNames).toContain('test/file-list-printer-tests.js');
+    expect(fileNames).toContain('test/hogan-cache-tests.js');
+    expect(fileNames).toContain('test/line-by-line-tests.js');
   }));
 
   it('should get correct titles: with added file', inject([DiffserviceService], (service: DiffserviceService) => {
-    var files = service.getFiles(mockData.bigAddRemove);
+    var files = service.getFilesInfo(mockData.bigAddRemove);
 
     expect(files.length).toBe(6);
-    expect(files).toContain('.eslintignore');
-    expect(files).toContain('docs/demo.html');
-    expect(files).toContain('docs/index.html');
-    expect(files).toContain('docs/main.css');
-    expect(files).toContain('docs/main.min.css');
-    expect(files).toContain('docs/url.html');
+    expect(files).toContain(<DiffFile>{'name': '.eslintignore', type: FileOperation.MODIFY});
+    expect(files).toContain(<DiffFile>{'name': 'docs/demo.html', type: FileOperation.REMOVE});
+    expect(files).toContain(<DiffFile>{'name': 'docs/index.html', type: FileOperation.MODIFY});
+    expect(files).toContain(<DiffFile>{'name': 'docs/main.css', type: FileOperation.MODIFY});
+    expect(files).toContain(<DiffFile>{'name': 'docs/main.min.css', type: FileOperation.ADD});
+    expect(files).toContain(<DiffFile>{'name': 'docs/url.html', type: FileOperation.ADD});
   }));
 });
