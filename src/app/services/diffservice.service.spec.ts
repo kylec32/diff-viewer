@@ -17,7 +17,7 @@ describe('DiffserviceService', () => {
   }));
 
   it('should get correct files: main example', inject([DiffserviceService], (service: DiffserviceService) => {
-    var files = service.getFilesInfo(mockData.main);
+    var files = service.getDiffInfo(mockData.main);
 
     expect(files.length).toBe(12);
     let fileNames = files.map((file) => file.name);
@@ -36,7 +36,7 @@ describe('DiffserviceService', () => {
   }));
 
   it('should get correct titles: with added file', inject([DiffserviceService], (service: DiffserviceService) => {
-    var files = service.getFilesInfo(mockData.bigAddRemove);
+    var files = service.getDiffInfo(mockData.bigAddRemove);
 
     expect(files.length).toBe(6);
     expect(files).toContain(<DiffFile>{'name': '.eslintignore', type: FileOperation.MODIFY});

@@ -16,11 +16,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
 
-    var result = this.diffService.getFilesInfo(mockData.bigAddRemove);
+    var result = this.diffService.getDiffInfo(mockData.bigAddRemove);
 
-    result.forEach(element => {
-      console.log(element);
-    });
+    console.log(result)
     
     console.log('-----------------------------');
 

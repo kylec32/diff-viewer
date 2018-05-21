@@ -45,16 +45,59 @@ export class DiffserviceService {
     return fileInfo;
   }
 
+  public getDiffInfo(diff: string): DiffFile[] {
+    let diffFilesData: DiffFile[] = [];
+    var fileMatch = /^diff --git a\/.*/gm
+    var fileInfos = diff.split(fileMatch).slice(1); // removes empty beginning
+    for(let i = 0; i < fileInfos.length; i++) {
+      var diffPartLines = fileInfos[i].split('\n').splice(1); // removing empty beginning
+      
+      let shift = 0;
+      if(diffPartLines[0].startsWith('new ') || diffPartLines[0].startsWith('deleted ')) {
+        shift = 1;
+      }
+      let name = this.getFileNameFromDiffLines(diffPartLines[shift + 1], diffPartLines[shift + 2]);
+      let type = this.getChangeTypeFromDiffLines(diffPartLines[shift + 1], diffPartLines[shift + 2]);
+      
+      let fileData = <DiffFile>{name: name, type: type};
+      diffFilesData.push(fileData);
+    }
+
+    return diffFilesData;
+  }
+
+  private getFileNameFromDiffLines(removeLine: string, addLine: string): string {
+    let removeFileMatch = /^--- (a\/(.*)|\/dev\/null)/;
+    let addFileMatch = /^\+\+\+ (b\/(.*)|\/dev\/null)/;
+
+    let addMatch = addFileMatch.exec(addLine);
+    let removeMatch = removeFileMatch.exec(removeLine);
+
+    let type = this.getChangeTypeFromDiffLines(removeLine, addLine);
+    return type == FileOperation.ADD ? addMatch[2] : removeMatch[2];
+  }
+
+  private getChangeTypeFromDiffLines(removeLine: string, addLine: string): FileOperation {
+    let removeFileMatch = /^--- (a\/(.*)|\/dev\/null)/;
+    let addFileMatch = /^\+\+\+ (b\/(.*)|\/dev\/null)/;
+
+    let addMatch = addFileMatch.exec(addLine);
+    let removeMatch = removeFileMatch.exec(removeLine);
+
+    return addMatch[1] == '/dev/null' ? FileOperation.REMOVE : removeMatch[1] == '/dev/null' ? FileOperation.ADD : FileOperation.MODIFY;
+  }
+
   public getFileDiffDetails(diff: String):any {
-    var fileMatch = /diff --git a\/.*[\r\n|\r|\n]+/
+    var fileMatch = /^diff --git a\/.*(\r\n|\r|\n)+/
     var diffLines = diff.split(fileMatch);
     var results:any[] = [];
-    for(let item in diffLines) {
-      //var pieces = diffLines[item].split(/(@@.*)/);
-      //debugger;
-      var trimmedStuff = this.trimMetaData(diffLines[item]);
-      results.push(this.chunkDiffIntoParts(trimmedStuff));
-    }
+    results = diffLines;
+    // for(let item in diffLines) {
+    //   //var pieces = diffLines[item].split(/(@@.*)/);
+    //   //debugger;
+    //   var trimmedStuff = this.trimMetaData(diffLines[item]);
+    //   results.push(this.chunkDiffIntoParts(trimmedStuff));
+    // }
 
     return results;
   }
