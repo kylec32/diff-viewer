@@ -58,12 +58,20 @@ export class DiffserviceService {
       }
       let name = this.getFileNameFromDiffLines(diffPartLines[shift + 1], diffPartLines[shift + 2]);
       let type = this.getChangeTypeFromDiffLines(diffPartLines[shift + 1], diffPartLines[shift + 2]);
+      let diffLines = diffPartLines.slice(shift+3);
+      const fileChanged: number[] = this.getLinesChanged(diffLines);
       
-      let fileData = <DiffFile>{name: name, type: type};
+      let fileData = <DiffFile>{name: name, type: type, linesAdded: fileChanged[0], linesRemoved: fileChanged[1], lines: diffLines};
       diffFilesData.push(fileData);
     }
 
     return diffFilesData;
+  }
+
+  private getLinesChanged(fileContent: string[]): number[] {
+    return [fileContent.filter(line => line.startsWith('+')).length,
+    fileContent.filter(line => line.startsWith('-')).length]
+    
   }
 
   private getFileNameFromDiffLines(removeLine: string, addLine: string): string {

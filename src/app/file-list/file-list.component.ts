@@ -32,4 +32,14 @@ export class FileListComponent implements OnInit {
     }
   }
 
+  getType(diffFile:DiffFile):string {
+    if(diffFile.type == FileOperation.ADD) {
+      return "ADDED";
+    } else if (diffFile.type == FileOperation.MODIFY) {
+      return "CHANGED";
+    } else {
+      return "DELETED";
+    }
+  }
+
 }

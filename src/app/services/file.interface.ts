@@ -4,5 +4,6 @@ export interface DiffFile {
     name: string,
     type: FileOperation,
     linesAdded: number,
-    linesRemoved: number
+    linesRemoved: number,
+    lines: string[]
 }
