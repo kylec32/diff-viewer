@@ -1,0 +1,24 @@
+<div class="d2h-file-list-wrapper">
+  <div class="d2h-file-list-header">
+      <span class="d2h-file-list-title">Files changed ({{diffFiles.length}})</span>&nbsp;
+      <span class="showHide" *ngIf="!visible" (click)="toggleVisibility()">Show</span><span class="showHide" *ngIf="visible" (click)="toggleVisibility()">Hide</span>
+  </div>
+  
+  
+  <ol class="d2h-file-list" *ngIf="visible">
+    <li class="d2h-file-list-line" *ngFor="let diffFile of diffFiles">
+      <span class="d2h-file-name-wrapper">
+        <span>
+          {{getSymbol(diffFile)}}
+        </span>
+        &nbsp;
+        {{diffFile.name}}
+        <span class="d2h-file-stats">
+            <span class="d2h-lines-added">+1</span>
+            <span class="d2h-lines-deleted">-1</span>
+        </span>
+
+      </span>
+    </li>
+  </ol>
+</div>

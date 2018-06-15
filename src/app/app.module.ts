@@ -4,10 +4,12 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 
 import { DiffserviceService } from './services/diffservice.service';
+import { FileListComponent } from './file-list/file-list.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    FileListComponent
   ],
   imports: [
     BrowserModule

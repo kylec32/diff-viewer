@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DiffserviceService } from './services/diffservice.service';
+import { DiffFile } from './services/file.interface';
+
+declare var require: any;
 var mockData = require('./services/mockdata.json');
 
 @Component({
@@ -9,6 +12,7 @@ var mockData = require('./services/mockdata.json');
 })
 export class AppComponent implements OnInit {
   title = 'app';
+  result: DiffFile[] = []
 
   constructor(private diffService:DiffserviceService) {
 
@@ -16,9 +20,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
 
-    var result = this.diffService.getDiffInfo(mockData.bigAddRemove);
+    this.result = this.diffService.getDiffInfo(mockData.bigAddRemove);
 
-    console.log(result)
+    console.log(this.result)
     
     console.log('-----------------------------');
 
